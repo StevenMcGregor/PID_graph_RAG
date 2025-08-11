@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Environments
+venv/
+.env
+
+# Editors/OS
+.DS_Store
+.idea/
+.vscode/
+
+# Build/Dist
+build/
+dist/
+*.egg-info/
+
+# Large docs (optional)
+DEXPI_PID_Specification_1.4.pdf
+
