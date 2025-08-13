@@ -3,4 +3,5 @@ networkx>=2.8
 neo4j>=5.15
 python-dotenv>=1.0
 lxml>=5.2
+openai>=1.0
 
