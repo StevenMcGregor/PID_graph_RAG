@@ -4,10 +4,56 @@ from dotenv import load_dotenv  # <-- Das war das fehlende Import!
 
 from PnID_utilities import load_dexpi_model, to_networkx_graph, export_graphml
 from neo4j_utilities import load_graph_to_neo4j
-from AI_ulities import generate_pnid_response,start_pnid_chat
+from AI_ulities import generate_pnid_response, start_pnid_chat, AI_dexpi_change
 
 # Load environment variables from .env file
 load_dotenv()
+
+
+def main_test_AI_dexpi_change() -> int:
+    """
+    Test AI-based DEXPI change request handling
+    - Read XML file content
+    - Send change request + XML to OpenAI
+    - Save updated XML and print comment
+    """
+    dexpi_xml_path = "C01V04-VER.EX01.xml"
+
+    # Check XML file exists
+    if not os.path.isfile(dexpi_xml_path):
+        print(f"ERROR: File not found: {dexpi_xml_path}")
+        return 1
+
+    try:
+        # Read XML content as string
+        with open(dexpi_xml_path, "r", encoding="utf-8") as f:
+            xml_content = f.read()
+
+        # Define change request (English)
+        change_request = input("Enter your DEXPI change request (English): ").strip()
+        if not change_request:
+            print("ERROR: Empty change request")
+            return 1
+
+        # Call OpenAI helper to apply change
+        print("Applying change with OpenAI...")
+        updated_xml, comment = AI_dexpi_change(change_request, xml_content)
+
+        # Save updated XML to a new file
+        out_path = dexpi_xml_path.replace(".xml", ".updated.xml")
+        with open(out_path, "w", encoding="utf-8") as f:
+            f.write(updated_xml)
+
+        print("\n=== Change Comment ===")
+        print(comment)
+        print("======================")
+        print(f"Updated XML written to: {out_path}")
+        return 0
+
+    except Exception as e:
+        print(f"ERROR: {e}")
+        return 1
+
 
 def main_test_neo4j() -> int:
     """Test Neo4j loading with fixed XML file"""
@@ -106,11 +152,13 @@ def main_test_OpenAI() -> int:
         
         
 if __name__ == "__main__":
-    input_mode = input(f"Choose what to test->C01V04-VER.EX01.xml (1: Neo4j, 2: AI Chat, 3: OpenAI): ").strip()
+    input_mode = input("Choose what to test->C01V04-VER.EX01.xml (1: Neo4j, 2: AI Chat, 3: OpenAI, 4: AI Editor): ").strip()
     if input_mode == "1":
         raise SystemExit(main_test_neo4j())
     elif input_mode == "2":
         raise SystemExit(main_test_chat())
     elif input_mode == "3":
         raise SystemExit(main_test_OpenAI())
+    elif input_mode == "4":
+        raise SystemExit(main_test_AI_dexpi_change())
 
